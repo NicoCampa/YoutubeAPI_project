@@ -1,0 +1,18 @@
+---
+title: "Are we ready today for tomorrow technology?"
+output:
+  pdf_document:
+    latex_engine: xelatex
+  html_document:
+    df_print: paged
+mainfont: Arial
+fontsize: 12pt
+geometry: left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm
+date: "2024-02-28"
+author: "Nicolò Campagnoli"
+---
+
+\tableofcontents
+
+## 1. Introduction
+### 1.1 Youtube
