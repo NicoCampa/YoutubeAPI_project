@@ -11,8 +11,8 @@
 # 10 - LmcWMjBpYBU - Be gentle with the Apple Vision Pro - ITS PLASTIC!! - 10k comments
 
 library(tuber)
-yt_oauth(app_id = "879991409679-ogeitgeq8thr77vndveoct6itusktjtv.apps.googleusercontent.com",
-          app_secret = "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", token = "")
+yt_oauth(app_id = "",
+          app_secret = "", token = "")
 
 MarquesBrownlee <- get_all_comments('dtp6b76pMak')
 CaseyNeistat <- get_all_comments('UvkgmyfMPks')
