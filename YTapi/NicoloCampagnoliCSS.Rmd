@@ -99,7 +99,7 @@ We are interested in words that co-occur within particular reviews or among them
 ## 2.7 Term Frequency Inverse Document Frequency - TFIDF
 To create a comparison cloud we need two subsets of the original data: positive and negative reviews. The drawback of this approach is the elimination of all the neutral reviews with a score of 0. We will create one corpus containing two elements, one for each collapsed vector of characters containing either one of the polarities. From the corpus, we will obtain a TDM changing the term weights. The weighting has been changed to ‘Term Frequency Inverse Document Frequency’ (TFIDF).
 Instead of simple term frequency, the TFIDF value increases with the term occurrence but is offset by the overall frequency of the word in the corpus. The offsetting effect helps remove commonly occurring terms that may not yield much information. From a common sense perspective, if a term appears often, it must be important and represented in frequency. However, if it appears in all reviews, it is likely not that insightful or informational.
-It is calculated as the product of ‘Term Frequency’ (TF) and ‘Inverse Document Frequency’ (IDF), the latter is equal to log(total document in corpus / # with term t in it).
+It is calculated as the product of ‘Term Frequency’ (TF) and ‘Inverse Document Frequency’ (IDF), the latter is equal to log(total document in corpus / # with term t in it).  
 • Now we can build the comparison cloud based on scaled polarity score and weighted TFIDF:  
 
 ## 2.8 Topic Modelling

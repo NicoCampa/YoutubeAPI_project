@@ -18,7 +18,7 @@ library(tuber)
 library(stringr)
 library(stringi)
 
-comments = read.csv("comments8Feb.csv", sep = ',')
+comments = read.csv("comments1March.csv", sep = ',')
 comments = comments[,-1]
 
 # scrap the latest version of emojis
