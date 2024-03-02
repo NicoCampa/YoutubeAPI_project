@@ -154,7 +154,7 @@ In this case, since the correlation is a symmetric kind of association we don’
 
 
 ## 2.8 Topic Modelling  
-
+Topic modeling is a statistical method for uncovering the underlying thematic structure in a large corpus of text. By analyzing patterns of word occurrences across documents, it identifies topics—clusters of related words—that represent the main subjects discussed in the corpus. The most common approach to topic modeling is Latent Dirichlet Allocation (LDA), where the algorithm assigns each document a mixture of topics and each topic a distribution of words, based on the assumption that documents are produced from a mixture of these topics. We apply this technique to our data:  
 
 # 3. Conclusions
 # 4. Discussion
