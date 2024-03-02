@@ -322,3 +322,79 @@ t %>% filter(correlation > .50) %>% # filters data
 # # the relationship isn't directional. 
 # # common (like in the bigram analysis earlier)
 
+
+# TOPIC 
+# Assuming you've already created 'tdm' as shown in your script
+
+# Load the topicmodels package
+library(topicmodels)
+
+# Fit the LDA model
+num_topics <- 5 # You might need to experiment with this number
+lda_model <- LDA(tdm, k = num_topics, control = list(seed = 1234))
+
+# Examine the top terms in each topic
+top_terms <- terms(lda_model, 10) # Get top 10 terms for each topic
+print(top_terms)
+
+# Topic composition of documents
+doc_topics <- posterior(lda_model)$topics
+# This gives you a matrix where each row corresponds to a document and each column to a topic
+# The values represent the proportion of words in the document that are attributed to each topic
+
+# Optionally, visualize the topics
+# Simple visualization of top terms per topic with ggplot2
+library(ggplot2)
+library(tidyr)
+
+top_terms_df <- as.data.frame(top_terms)
+top_terms_df <- pivot_longer(top_terms_df, cols = everything(), names_to = "Topic", values_to = "Term")
+ggplot(top_terms_df, aes(x = reorder(Term, -as.numeric(Topic)), y = as.numeric(Topic))) + 
+  geom_bar(stat = "identity") + 
+  coord_flip() + 
+  labs(y = "Topic", x = "Term Frequency")
+
+
+# TOPIC 2
+## Topic Modeling
+
+
+
+K <- 20
+
+topicModel <- LDA(DTM.trim, 
+                  K, 
+                  method = "Gibbs", 
+                  control = list(iter = 500, 
+                                 verbose = 25,
+                                 seed = 1234))
+
+tmResult <- posterior(topicModel)
+
+
+
+beta <- tmResult$terms
+glimpse(beta)
+
+
+
+theta <- tmResult$topics
+glimpse(theta)
+
+terms(topicModel, 10)
+
+top5termsPerTopic <- terms(topicModel, 5)
+
+
+topicNames <- apply(top5termsPerTopic, 
+                    2, 
+                    paste, 
+                    collapse = " ")
+
+
+topicProportions <- colSums(theta) / nrow(DTM)  # average probability over all paragraphs
+names(topicProportions) <- topicNames     # Topic Names
+sort(topicProportions, decreasing = TRUE) # sort
+
+
+
