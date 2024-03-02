@@ -59,7 +59,7 @@ corpus <- Corpus(VectorSource(comments$ReplacedEmoji))
 
 corpus <- tm_map(corpus, content_transformer(tolower)) #all lowercase
 corpus <- tm_map(corpus, removeNumbers) #remove numbers
-corpus <- tm_map(corpus, removeWords,tm::stopwords('en')) #remove english stopwords 
+corpus <- tm_map(corpus, removeWords,c(tm::stopwords('en'),'apple','face')) #remove english stopwords 
 corpus <- tm_map(corpus, content_transformer(str_replace_all), '-', ' ') #replace dashes with spaces
 corpus <- tm_map(corpus, content_transformer(str_replace_all), '–', ' ')
 corpus <- tm_map(corpus, removePunctuation) #remove punctuation
@@ -73,11 +73,12 @@ m <- as.matrix(tdm) #matrix
 df <- data.frame(text = sapply(corpus, as.character), stringsAsFactors = FALSE) #data.frame
 v <- sort(rowSums(m),decreasing=TRUE) #term frequencies
 d <- data.frame(word = names(v),freq=v)
-
+dim(m)
+nrow(m)
 # wordcloud
 library(wordcloud)
 wordcloud(words = d$word, freq = d$freq, min.freq = 1000,
-          max.words = 200, random.order = F, rot.per = 0.35,
+          max.words = 150, random.order = F, rot.per = 0.35,
           colors = brewer.pal(8, 'Dark2'))
 
 #most frequent words
@@ -157,7 +158,7 @@ ggplot(data=plot, aes(x=emotion, y=value)) +
                                                                                                       'white','#ff7473',
                                                                                                       '#28bfc9','white',
                                                                                                       'white','white'), colour="black") + theme(legend.position = "none")
-associations<-findAssocs(tdm, 'problem', 0.25)
+associations<-findAssocs(tdm, 'problem', 0.10)
 associations<-as.data.frame(associations)
 associations$terms<-row.names(associations)
 associations$terms<-factor(associations$terms,
@@ -172,18 +173,18 @@ ggplot(associations, aes(y=terms)) +
   theme(text=element_text(size=20),
         axis.title.y=element_blank())
 
-associations<-findAssocs(tdm, 'hate', 0.16)
+associations<-findAssocs(tdm, 'great', 0.07)
 associations<-as.data.frame(associations)
 associations$terms<-row.names(associations)
 associations$terms<-factor(associations$terms,
                            levels=associations$terms)
 
 ggplot(associations, aes(y=terms)) +
-  geom_point(aes(x=hate), data=associations,
+  geom_point(aes(x=great), data=associations,
              size=5)+
-  theme_gdocs()+ geom_text(aes(x=hate,
-                               label=hate),
-                           colour="darkred",hjust=-.25,size=8)+
+  theme_gdocs()+ geom_text(aes(x=great,
+                               label=great),
+                           colour="darkred",hjust=0.5,size=4, vjust=-1)+
   theme(text=element_text(size=20),
         axis.title.y=element_blank())
 
@@ -192,7 +193,7 @@ corpusBi <- Corpus(VectorSource(comments$ErasedEmoji))
 
 corpusBi <- tm_map(corpusBi, content_transformer(tolower)) #all lowercase
 corpusBi <- tm_map(corpusBi, removeNumbers) #remove numbers
-corpusBi <- tm_map(corpusBi, removeWords, c(tm::stopwords('en'),'app')) #remove english stopwords 
+corpusBi <- tm_map(corpusBi, removeWords, c(tm::stopwords('en'))) #remove english stopwords 
 corpusBi <- tm_map(corpusBi, content_transformer(str_replace_all), '-', ' ') #replace dashes with spaces
 corpusBi <- tm_map(corpusBi, content_transformer(str_replace_all), '–', ' ')
 corpusBi <- tm_map(corpusBi, removePunctuation) #remove punctuation
@@ -206,8 +207,8 @@ bigrams <- dfBi %>%
 
 #most frequent bigrams
 bigram_counts <- bigrams %>% 
-  count(c1, c2, sort = TRUE) #the emoji play a big role in that...
-#i'll see how to adress it..
+  count(c1, c2, sort = TRUE) 
+
 
 bigram_counts <- bigram_counts %>%
   drop_na(c1) %>%
@@ -215,7 +216,7 @@ bigram_counts <- bigram_counts %>%
 head(bigram_counts, 10)
 
 bigram_graph <- bigram_counts %>% 
-  filter(n > 170) %>% # chooses bigrams that occur more than 35 times
+  filter(n > 200) %>% 
   graph_from_data_frame() 
 
 
@@ -234,7 +235,7 @@ ggraph(bigram_graph, layout = "fr") + # to apply a layout to a graph
   theme_void()
 
 #see which words are preceded by a negation
-negation_words <- c('headset', 'price', 'immersion', 'vr', 'virtual', 'buy') 
+negation_words <- c('headset', 'reality', 'immersion', 'society', 'children', 'buy') 
 negated_words <- bigrams %>% 
   filter(c1 %in% negation_words) %>% 
   inner_join(afinn, by = c('c2' = 'word')) %>% 
@@ -274,7 +275,7 @@ corpus2 <- tm_map(corpus2, stripWhitespace) #remove white spaces
 df2 <- data.frame(text = sapply(corpus2, as.character), stringsAsFactors = FALSE)
 # # 
 
-df2$review <- rep(c(1:6938),each = 14)
+df2$review <- rep(c(1:34591),each = 3)
 t = df2 %>% unnest_tokens(word, text, drop = FALSE) %>% 
 select(-text) %>%
 group_by(word) %>%
@@ -287,7 +288,7 @@ pairwise_cor(word, review, sort = TRUE)
 # 
 # # We can pick some interesting words and find other most associated with them:
 word_cors_top6 <- t %>%
-  filter(item1 %in% c("expensive", "problem", "hate", "battery")) %>% # we choose those words
+  filter(item1 %in% c("good", "cool", "like", "better")) %>% # we choose those words
 group_by(item1) %>% 
 top_n(10) %>% # we choose top 10 (frequent) words 
 ungroup() %>%

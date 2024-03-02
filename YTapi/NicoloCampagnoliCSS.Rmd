@@ -54,11 +54,17 @@ Our research, which draws upon the analysis of YouTube comments on VR-related vi
 ## 2.1 The dataset
 The dataset is composed of comments from a selection of YouTube videos, chosen based on their popularity while also considering diversity. This compilation resulted in approximately 100,000 comments across 10 distinct videos, which collectively have gained over 60 million views.  
 
-![Thumbnails of the selected videos](/Users/nicolocampagnoli/Documents/YoutubeAPI_project/YTapi/Screenshot 2024-02-29 at 17.38.32.png "Thumbnails of the selected videos")  
+![Thumbnails of the selected videos](image1.png "Thumbnails of the selected videos")  
 
 
 
 ## 2.2 Cleaning the dataset
+```{r, echo=FALSE}
+
+comments = read.csv("comments1March.csv", sep = ',')
+comments = comments[,-1]
+```
+
 ### 2.2.1 Dealing with emojis 
 ### 2.2.2 Corpus  
 
@@ -67,7 +73,7 @@ After preparing our data, we proceed to structure it into a corpus. A corpus is 
 ### 2.2.3 TDM - term document matrix  
 The term document matrix is the analytical representation of a corpus. In TDM each column represents an individual review, while each row the words. There exist also the DTM (document term matrix), which is its transpose. The appearance of a word in a review can be coded in many ways, thus this matrix can be weighted in different manners. We will use TF - term frequencies which simply count the number of occurrences by word.
 In our bag of words approach, the matrix is what the analytics are based on.
-Our matrix has 8093 rows and 10000 columns. Meaning that after cleaning, 8093 different words have remained in 10000 reviews.  
+Our matrix has 47779 rows and 103773 columns. Meaning that after cleaning, 47779 different words have remained in 103773 comments.  
 
 
 ## 2.3 Sentiment analysis
