@@ -24,7 +24,7 @@ YouTube, launched in 2005, has evolved from a simple video-sharing website to a 
 This diversity is crucial for understanding the wide-ranging perceptions and acceptance of VR headsets across different demographics and cultures. Unlike other social platforms that may cater to niche audiences or specific demographics, YouTube's extensive reach ensures a comprehensive dataset that reflects a global perspective. YouTube hosts a vast array of content specifically focused on VR technology, including detailed reviews, comparisons, and educational content. This specificity allows us to gather data from a targeted audience genuinely interested in or curious about VR headsets. The comments in this context are likely to be more informed and nuanced, offering valuable insights into consumer expectations, experiences, and concerns.  
 
 ### 1.1.1 YoutubeAPI
-For our project on analyzing trends in virtual reality content, we utilized the YouTube API, accessed through the "tuber" package in R, to systematically collect data. The YouTube API offers a comprehensive platform for extracting a wide range of data from YouTube, including video metrics, user comments, and content details, making it an invaluable resource for digital analysis. Our extraction process was conducted on February 8th 2024, ensuring that our data was current and reflective of recent discussions and viewpoints within the VR community. The "tuber" package in R provided a user-friendly interface for interacting with the YouTube API, allowing us to efficiently query the information needed without extensive manual effort. This approach enabled us to gather a rich dataset from popular technology channels on YouTube. Through this method, we aimed to understand better the public's interest and engagement with VR technologies, as well as identify emerging trends within the field. [10]  
+For our project on analyzing trends in virtual reality content, we utilized the YouTube API, accessed through the "tuber" package in R, to systematically collect data. The YouTube API offers a comprehensive platform for extracting a wide range of data from YouTube, including video metrics, user comments, and content details, making it an invaluable resource for digital analysis. Our extraction process was conducted on March 1st 2024, ensuring that our data was current and reflective of recent discussions and viewpoints within the VR community. The "tuber" package in R provided a user-friendly interface for interacting with the YouTube API, allowing us to efficiently query the information needed without extensive manual effort. This approach enabled us to gather a rich dataset from popular technology channels on YouTube. Through this method, we aimed to understand better the public's interest and engagement with VR technologies, as well as identify emerging trends within the field. [10]  
 
 ## 1.2 Text Mining
 Text mining is the process of extracting useful insights from text, a type of unstructured data. Essentially, it means going from an unorganized state to a summarized and structured state. During the analysis, we will see the ‘bag of words’ approach, in which every word or group of words, is treated as a unique feature of the reviews. In that way, we are not taking into account the order and the grammatical structure of the sentence, but we are using a very fast technique that is not computation- ally expensive. Text analytics software has impacted the way that many industries work, allowing them to improve product user experiences as well as make faster and better business decisions. In the IBM site we can find a list of examples:  
@@ -54,18 +54,15 @@ Our research, which draws upon the analysis of YouTube comments on VR-related vi
 ## 2.1 The dataset
 The dataset is composed of comments from a selection of YouTube videos, chosen based on their popularity while also considering diversity. This compilation resulted in approximately 100,000 comments across 10 distinct videos, which collectively have gained over 60 million views.  
 
-![Thumbnails of the selected videos](image1.png "Thumbnails of the selected videos")  
+![Thumbnails of the selected videos](plots/image1.png "Thumbnails of the selected videos")  
 
 
 
 ## 2.2 Cleaning the dataset
-```{r, echo=FALSE}
-
-comments = read.csv("comments1March.csv", sep = ',')
-comments = comments[,-1]
-```
 
 ### 2.2.1 Dealing with emojis 
+To address the challenge of interpreting emojis in text mining, I developed a script, now available on the GitHub repo of this project [15], designed to translate emojis into text. The script ensures that the lastest releases of emojis have been includes in the translation. Something that current solution are not able to do. This is crucial when working with social media text data, so that the whole spectrum of sentiment coming from emoticons is kept into account. To this point, I specify that the translated version of emojis is used for tools like sentiment analysis. While they are erased for any other method to ensure integrity of the data.  
+
 ### 2.2.2 Corpus  
 
 After preparing our data, we proceed to structure it into a corpus. A corpus is an organized collection of text that transforms unstructured text into a structured format, essentially a compilation of documents (in our case, social media comments). The next step involves cleaning the text, which includes converting all letters to lowercase, eliminating numbers, removing 'stopwords', excising white spaces, and stripping punctuation. 'Stopwords' refer to frequently occurring words that offer no significant insight for analysis. These are common words, such as 'the', 'is', and 'at', which appear frequently across texts. Their removal is pivotal for focusing on more significant elements of the text. This cleaning process is essential for standardizing the text and minimizing noise, enhancing the clarity and relevance of the data for subsequent analysis.  
@@ -75,6 +72,18 @@ The term document matrix is the analytical representation of a corpus. In TDM ea
 In our bag of words approach, the matrix is what the analytics are based on.
 Our matrix has 47779 rows and 103773 columns. Meaning that after cleaning, 47779 different words have remained in 103773 comments.  
 
+### 2.2.4 Word frequencies  
+Wordcloud is a popular and powerful tool for showing term frequencies. 
+
+
+![wordcloud](plots/Rplot02.png) 
+
+
+  
+• The result sometimes could be crowded, so instead we can visualize the frequencies by a barplot:
+![barplot](plots/Rplot03.png)  
+
+We can see among the most frequent words, suggestions of positive sentiment. Which will be explored in the next section.  
 
 ## 2.3 Sentiment analysis
 Sentiment analysis is the process of extracting an author’s emotional intent from text. There are several emotional frameworks that can be used for sentiment analysis. We will focus on polarity, in which there are only two categories, positive and negative.
@@ -83,33 +92,70 @@ Subjectivity lexicon assigns to a particular word an emotional state, there exis
 • NRC: list words and their associations with eight basic emotions (anger, fear, anticipation, trust, surprise, sadness, joy, and disgust) and two sentiments (negative and positive). It was developed by Robert Plutchik, a psychologist. He believed that the eight primary emotions helped to improve survivability over time and were passed on from generation to generation. Any emotional states outside of these are amalgamations of the original eight and are therefore subordinate. It contains approximately 13900 words, of which, around 5600 are related to polarity. [11]
 
 ### 2.3.1 Bing Lexicon
-We have to use tokenized words. Tokenization is feature extraction, the process of breaking up sequences of strings into pieces such as words in our case (for the moment).
-We apply sentiment polarity to tokenized words, by doing so we are able to plot the most frequent words by sentiment:
+We have to use tokenized words. Tokenization is feature extraction, the process of breaking up sequences of strings into pieces such as words in our case.
+We apply sentiment polarity to tokenized words, by doing so we are able to plot the most frequent words by sentiment:  
+![Thumbnails of the selected videos](plots/Rplot04.png "Thumbnails of the selected videos")  
 
-### 2.3.1 NRC Lexicon
-We try also the NRC lexicon for comparison and to see if the results are consistent with respect to Bing.
+
+### 2.3.2 NRC Lexicon
+We try also the NRC lexicon for comparison and to see if the results are consistent with respect to Bing.  
+![Thumbnails of the selected videos](plots/Rplot05.png "Thumbnails of the selected videos")  
+
+• Those dictionaries highlighted words crucial to sentiment. They will be the ground field for the next analyses. We aim to explore what those words refer to. To further enrich the debate about Virtual Reality pros and cons. The NRC package unlocks the possibility to explore the distribution of a spectrum of emotions:  
+![Thumbnails of the selected videos](plots/Rplot06.png "Thumbnails of the selected videos")  
+
+• The polarity is skewed toward positive. Among emotions the most prevalent is 'anticipation'. Which is 'a feeling of excitement about something that is going to happen in the near future'. [13]   
 
 ## 2.4 Word Association
 The next step is to explore which words are most associated with those ones. Word association, as seen in the Kwartler’s book, is a sort of statistical correlation. It is an implication of the form X → Y, where X is a set of antecedent words and Y is the consequent word. It ranges from 0 to 1 instead of -1 to 1. Since all words would have some associative word, looking at outliers may not be appropriate, and thus the frequency analysis is usually performed first as we have done. [11]  
 
+![](plots/image.png "Word association")  
+
+• We started to explore possibles topic of discussion from big polarity players. The method has been tried on all the words not always discovering something usefull. This is because word association is not directly related to frequency but instead refers to the term pairings.  
+
+
 ## 2.5 Bi-Grams
-Until now we have considered tokens of uni-grams, which means just 1 word at a time. By examing how frequently one word is followed by another, we can build an idea on the most common topics. Another important aspect, is when a word is preceded by a negation like ‘not’, ‘never’, ‘without’... and son on; that can change radically the sentiment on the comment with respect to sentiment analysis on uni-grams like before. I decided to not consider emojis because the most frequent bi-grams would have been, in that case, ‘smiling-face’, ‘red-heart’, and so on. Their inclusion would have led to a lot of noise in the following graphs. We start by having a look at the top 10 bi-grams by frequency:   
+Until now we have considered tokens of uni-grams, which means just 1 word at a time. By examing how frequently one word is followed by another, we can build an idea on the most common topics. For istance, by analyzing the frequency and occurrence of bi-grams in large text corpora, predictive text systems can suggest the most likely next word based on the current word input, this is commonly used in keyboard software on smartphones. I decided to not consider emojis because the most frequent bi-grams would have been in that case, ‘smiling-face’, ‘red-heart’, and so on. Their inclusion would have led to a lot of noise in the following graphs. We start by having a look at the top 10 bi-grams by frequency:  
 
-### 2.5.1 Negation words in Bi-Grams
-Without context, some sentiments could be misinterpreted. The next plot shows which words are misclassified, we will have an idea of the magnitude of the error thanks to the AFINN lexicon, which assign a numerical score (larger than 0 for positive, vice-versa for negative) instead of being just dichotomous. The x-axis is a multiplication between the sentiment score of the AFINN and the number of occurrences:
+\begin{center}
+\includegraphics[width=0.5\linewidth]{plots/bigrams.png}
+\end{center}
+  
+We can arrange words into a network connected by nodes using the package ‘igraph’. Most common words will create center nodes. The shade of darkness of the arrow will depend on the frequency of that bi-gram. We now visualize only bi-grams with a frequency larger than 200 times: [14]
+
+\begin{center}
+\includegraphics[width=1\linewidth]{plots/Rplot12.png}
+\end{center}
+
+### 2.5.1 Bi-Grams and sentiment  
+This tool can be integrated with sentiment analysis to focus on sentiments associated with controversial topics in this field, such as "children" and "society". Additionally, it aims to uncover unique aspects related to the product, specifically concerning "buy" and "headset", as well as distinctive features of the technology, including "immersion" and "reality".  
+\begin{center}
+\includegraphics[width=1\linewidth]{plots/Rplot15.png}
+\end{center}
  
- 
+
+• The product per se has mainly positive sentiment. While otherwise the sentiment is pretty divisive.  
+
 ## 2.6 Correlation
-We are interested in words that co-occur within particular reviews or among them, even if not next to each other. We consider groups of 14 comments each, and we are going to see which words are pairwise correlated using a function inside the widyr package. We still use the data without emoji for the same reason of bi-grams. For the moment we focus on negative words that have come out from the sentiment analysis, to see whether we can find correlated topics: [12]
+We are interested in words that co-occur within particular reviews or among them, even if not next to each other. We are going to see which words are pairwise correlated using a function inside the 'widyr' package. We still use the data without emoji for the same reason of bi-grams. We focus on words that have come out from the sentiment analysis, to see whether we can find correlated topics: [12]  
 
-## 2.7 Term Frequency Inverse Document Frequency - TFIDF
-To create a comparison cloud we need two subsets of the original data: positive and negative reviews. The drawback of this approach is the elimination of all the neutral reviews with a score of 0. We will create one corpus containing two elements, one for each collapsed vector of characters containing either one of the polarities. From the corpus, we will obtain a TDM changing the term weights. The weighting has been changed to ‘Term Frequency Inverse Document Frequency’ (TFIDF).
-Instead of simple term frequency, the TFIDF value increases with the term occurrence but is offset by the overall frequency of the word in the corpus. The offsetting effect helps remove commonly occurring terms that may not yield much information. From a common sense perspective, if a term appears often, it must be important and represented in frequency. However, if it appears in all reviews, it is likely not that insightful or informational.
-It is calculated as the product of ‘Term Frequency’ (TF) and ‘Inverse Document Frequency’ (IDF), the latter is equal to log(total document in corpus / # with term t in it).  
-• Now we can build the comparison cloud based on scaled polarity score and weighted TFIDF:  
+\begin{center}
+\includegraphics[width=1\linewidth]{plots/correlations.png}
+\end{center}
 
-## 2.8 Topic Modelling
-## 2.9 Exploring differences by community
+• Similarly to n-grams we can build a network of words:
+
+\begin{center}
+\includegraphics[width=1\linewidth]{plots/Rplot17.png}
+\end{center}
+
+
+In this case, since the correlation is a symmetric kind of association we don’t have arrows in our graph.
+
+
+## 2.8 Topic Modelling  
+
+
 # 3. Conclusions
 # 4. Discussion
 \newpage
@@ -127,3 +173,7 @@ computational text analysis in sociology, A. Macanovic, 2022
 [10] https://cran.r-project.org/web/packages/tuber/index.html  
 [11] Text Mining in Practice with R, Ted Kwartler, WILEY  
 [12] https://cran.r-project.org/web/packages/widyr/index.html  
+[13] https://dictionary.cambridge.org/dictionary/english/anticipation  
+[14] https://cran.r-project.org/web/packages/igraph/index.html  
+[15] https://github.com/NicoCampa/YoutubeAPI_project.git  
+
