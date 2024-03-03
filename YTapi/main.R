@@ -18,7 +18,7 @@ library(tuber)
 library(stringr)
 library(stringi)
 
-comments = read.csv("comments1March.csv", sep = ',')
+comments = read.csv("data/comments1March.csv", sep = ',')
 comments = comments[,-1]
 
 # scrap the latest version of emojis
@@ -93,7 +93,7 @@ wordTokens <- df %>%
   filter(!str_detect(word, '\\d')) %>% # delete words with numbers 
   filter(nchar(word) > 1) # delete words shorter than two letters
 
-load(file = 'sentiments_lexicons.Rdata') #load lexicons
+load(file = 'data/sentiments_lexicons.Rdata') #load lexicons
 
 #apply sentiment polarity to words
 wordSentiment <- wordTokens %>% 
@@ -320,39 +320,23 @@ t %>% filter(correlation > .50) %>% # filters data
 # 
 # # You can see that the output is rather symmetrical and there are no arrows - because
 # # the relationship isn't directional. 
-# # common (like in the bigram analysis earlier)
+# # common (like in the bigram analysis earlie
 
 
+
+
+
+
+dtm <- DocumentTermMatrix(corpus2)
+
+rowTotals <- apply(dtm,1,sum)
+dtmNew <- dtm[rowTotals > 0, ]
 # TOPIC 
-# Assuming you've already created 'tdm' as shown in your script
+
 
 # Load the topicmodels package
 library(topicmodels)
 
-# Fit the LDA model
-num_topics <- 5 # You might need to experiment with this number
-lda_model <- LDA(tdm, k = num_topics, control = list(seed = 1234))
-
-# Examine the top terms in each topic
-top_terms <- terms(lda_model, 10) # Get top 10 terms for each topic
-print(top_terms)
-
-# Topic composition of documents
-doc_topics <- posterior(lda_model)$topics
-# This gives you a matrix where each row corresponds to a document and each column to a topic
-# The values represent the proportion of words in the document that are attributed to each topic
-
-# Optionally, visualize the topics
-# Simple visualization of top terms per topic with ggplot2
-library(ggplot2)
-library(tidyr)
-
-top_terms_df <- as.data.frame(top_terms)
-top_terms_df <- pivot_longer(top_terms_df, cols = everything(), names_to = "Topic", values_to = "Term")
-ggplot(top_terms_df, aes(x = reorder(Term, -as.numeric(Topic)), y = as.numeric(Topic))) + 
-  geom_bar(stat = "identity") + 
-  coord_flip() + 
-  labs(y = "Topic", x = "Term Frequency")
 
 
 # TOPIC 2
@@ -360,9 +344,9 @@ ggplot(top_terms_df, aes(x = reorder(Term, -as.numeric(Topic)), y = as.numeric(T
 
 
 
-K <- 20
-
-topicModel <- LDA(DTM.trim, 
+K <- 10
+dtmNew
+topicModel <- LDA(dtmNew, 
                   K, 
                   method = "Gibbs", 
                   control = list(iter = 500, 
@@ -370,10 +354,11 @@ topicModel <- LDA(DTM.trim,
                                  seed = 1234))
 
 tmResult <- posterior(topicModel)
+attributes(tmResult)
 
-
-
+nTerms(dtmNew)
 beta <- tmResult$terms
+dim(beta)
 glimpse(beta)
 
 
@@ -392,9 +377,26 @@ topicNames <- apply(top5termsPerTopic,
                     collapse = " ")
 
 
-topicProportions <- colSums(theta) / nrow(DTM)  # average probability over all paragraphs
+topicProportions <- colSums(theta) / nrow(dtmNew)  # average probability over all paragraphs
 names(topicProportions) <- topicNames     # Topic Names
 sort(topicProportions, decreasing = TRUE) # sort
+
+
+install.packages('LDAvis')
+library(topicmodels)
+lda_model <- LDA(dtmNew, k = 10, method = "Gibbs")
+
+terms(lda_model, 10) # Shows the top 10 terms in each topic
+
+library(LDAvis)
+lda_vis <- createJSON(phi = posterior(lda_model)$terms,
+                      theta = posterior(lda_model)$topics,
+                      doc.length = rowSums(as.matrix(dtmNew)),
+                      vocab = colnames(as.matrix(dtmNew)),
+                      term.frequency = colSums(as.matrix(dtmNew)))
+serVis(lda_vis)
+
+
 
 
 
